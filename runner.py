@@ -133,7 +133,7 @@ class MyParser:
                     return self.st[varname]
                 raise RunError("no value")
 			elif self.la == 'digit':
-                value = float(self.text)
+                value = int(self.text)
 				self.match('digit')
                 return value
 			else:
