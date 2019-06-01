@@ -6,4 +6,4 @@ Term            ->      Factor Factor_tail.
 Factor_tail     ->      or Factor Factor_tail | .
 Factor          ->      Atom Atom_tail.
 Atom_tail       ->      xor Atom Atom_tail | .
-Atom            ->      (Expr) | id | digit.
+Atom            ->      paren1 Expr paren2 | id | digit.
