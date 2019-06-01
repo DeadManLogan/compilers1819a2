@@ -20,9 +20,9 @@ class MyParser:
 		parethensys1 = plex.Str('(')
 		parethensys2 = plex.Str(')')
 
-        mask_and = plex.Str('and')
-        mask_or = plex.Str('or')
-        mask_xor = plex.Str('xor')
+		mask_and = plex.Str('and')
+		mask_or = plex.Str('or')
+		mask_xor = plex.Str('xor')
 
 		self.lexicon = plex.Lexicon([
 			(keyword, 'PRINT_TOKEN'),
@@ -31,15 +31,15 @@ class MyParser:
 			(parethensys1, '('),
 			(parethensys2, ')'),
 			(space, plex.IGNORE),
-            (mask_and, 'and'),
-            (mask_or, 'or'),
-            (mask_xor, 'xor'),
+			(mask_and, plex.TEXT),
+			(mask_or, plex.TEXT),
+			(mask_xor, plex.TEXT),
 			(digit2, 'digit')
 		])
 
 	def createScanner(self,fp):
 		self.scanner = plex.Scanner(self.lexicon,fp)
-		self.la , self.text = self.next_token()
+		self.la,self.text = self.next_token()
 
 
 	def next_token(self):
@@ -75,7 +75,7 @@ class MyParser:
 			self.expr()
 		elif self.la == 'PRINT_TOKEN':
 			self.match('PRINT_TOKEN')
-			print(self.expr())
+			self.expr()
 		else:
 			raise ParseError("Expected id or print")
 
@@ -93,7 +93,7 @@ class MyParser:
 			self.match('and')
 			self.term()
 			self.term_tail()
-		elif self.la == 'ID_TOKEN' or self.la == 'PRINT' or self.la == None or self.la == ')':
+		elif self.la == 'ID_TOKEN' or self.la == 'PRINT_TOKEN' or self.la == None or self.la == ')':
 			return
 		else:
 			raise ParseError('Expected and')
@@ -127,33 +127,31 @@ class MyParser:
 			raise ParseError("Expecting (,digit or id ")
 
 
-		def atom_tail(self):
-			if self.la == 'xor':
-				self.match('xor')
-				self.atom()
-				self.atom_tail()
-			elif self.la == 'or' or self.la == 'and' or self.la == 'ID_TOKEN' or self.la == 'PRINT_TOKEN' or self.la == None or self.la == ')':
-				return
-			else:
-				raise ParseError('Expected xor')
+	def atom_tail(self):
+		if self.la == 'xor':
+			self.match('xor')
+			self.atom()
+			self.atom_tail()
+		elif self.la == 'or' or self.la == 'and' or self.la == 'ID_TOKEN' or self.la == 'PRINT_TOKEN' or self.la == None or self.la == ')':
+			return
+		else:
+			raise ParseError('Expected xor')
 
 
-		def atom(self):
-			if self.la == '(':
-				self.match('(')
-				self.expr()
-				self.match(')')
-			elif self.la == 'ID_TOKEN':
-				self.match('ID_TOKEN')
-			elif self.la == 'digit':
-				self.match('digit')
-			else:
-				raise ParseError("Expecting (,digit or id ")
+	def atom(self):
+		if self.la == '(':
+			self.match('(')
+			self.expr()
+			self.match(')')
+		elif self.la == 'ID_TOKEN':
+			self.match('ID_TOKEN')
+		elif self.la == 'digit':
+			self.match('digit')
+		else:
+			raise ParseError("Expecting (,digit or id ")
 
 
 parser = MyParser()
 
 with open('new.txt', 'r') as fp:
 	parser.parse(fp)
-
-
