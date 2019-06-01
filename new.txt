@@ -1,0 +1,9 @@
+Stmt_list       ->      Stmt Stmt_list | .
+Stmt            ->      id equal Expr | print Expr.
+Expr            ->      Term Term_tail.
+Term_tail       ->      and Term Term_tail | .
+Term            ->      Factor Factor_tail.
+Factor_tail     ->      or Factor Factor_tail | .
+Factor          ->      Atom Atom_tail.
+Atom_tail       ->      xor Atom Atom_tail | .
+Atom            ->      paren1 Expr paren2 | id | digit.
